@@ -14,21 +14,18 @@ type Worker struct {
 }
 
 //NewWorker returns a new worker
-func NewWorker(conf config.Config) *Worker {
-	chatClient := twitch.NewAnonymousClient()
-	chatClient.Join(conf.Channels...)
-	return &Worker{
-		chatClient: chatClient,
-		store:      mongodb.New(),
+func NewWorker(conf config.Config, store *mongodb.Storage) *Worker {
+	w := &Worker{
+		store: store,
 	}
+	w.chatClient = twitch.NewAnonymousClient()
+	w.chatClient.OnPrivateMessage(w.StoreMessage)
+	w.chatClient.Join(conf.Channels...)
+	return w
 }
 
-//Init connects to the storage database as well as Twitch's irc server
+//Init connects to Twitch's irc server and blocks until an error occurs
 func (w *Worker) Init() error {
-	if err := w.store.Connect(); err != nil {
-		return err
-	}
-	w.chatClient.OnPrivateMessage(w.StoreMessage)
 	return w.chatClient.Connect()
 }
 

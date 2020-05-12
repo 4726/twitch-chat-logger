@@ -22,4 +22,6 @@ type Storage interface {
 	Connect() error
 	Add(ChatMessage) error
 	Query(channel, term, name string, date time.Time) ([]ChatMessage, error)
+	QuerySubscriber(channel, term, name string, date time.Time, subscribeMin int) ([]ChatMessage, error)
+	Close() error
 }

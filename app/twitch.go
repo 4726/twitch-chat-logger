@@ -1,6 +1,9 @@
 package app
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/4726/twitch-chat-logger/storage"
 	twitch "github.com/gempir/go-twitch-irc/v2"
 )
@@ -16,7 +19,6 @@ func privateMessageToStorageMessage(privmsg twitch.PrivateMessage) storage.ChatM
 		UserID:      privmsg.User.ID,
 		Name:        privmsg.User.Name,
 		DisplayName: privmsg.User.DisplayName,
-		// SubscribMonths: privmsg.Tags["badge-info"],
 	}
 	if _, ok := privmsg.User.Badges["admin"]; ok {
 		cm.Admin = true
@@ -35,6 +37,10 @@ func privateMessageToStorageMessage(privmsg twitch.PrivateMessage) storage.ChatM
 	}
 	if _, ok := privmsg.User.Badges["subscriber"]; ok {
 		cm.Subscriber = true
+	}
+	if s, ok := privmsg.Tags["badge-info"]; ok {
+		s = strings.TrimPrefix(s, "subscriber/")
+		cm.SubscribeMonths, _ = strconv.Atoi(s)
 	}
 	return cm
 }
