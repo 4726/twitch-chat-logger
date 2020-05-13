@@ -18,7 +18,7 @@ func (s *Server) router() *gin.Engine {
 }
 
 func NewServer(conf config.Config) (*Server, error) {
-	store := mongodb.New(conf.Mongo.Addr)
+	store := mongodb.New(conf.Mongo.Addr, conf.Mongo.DBName, conf.Mongo.CollectionName)
 	s := &Server{
 		h:    &Handlers{store},
 		conf: conf,

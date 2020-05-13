@@ -15,12 +15,9 @@ type Handlers struct {
 }
 
 func (h *Handlers) searchHandler(c *gin.Context) {
-	channel := c.Query("channel")
-	term := c.Query("term")
-	user := c.Query("user")
-	dateQuery := c.Query("date")
-	date, _ := parseDate(dateQuery)
-	messages, err := h.store.Query(channel, term, user, date)
+	var opts storage.QueryOptions
+	c.BindQuery(&opts)
+	messages, err := h.store.Query(opts)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "server error",

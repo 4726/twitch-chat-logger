@@ -12,13 +12,15 @@ import (
 )
 
 type Storage struct {
-	client *mongo.Client
-	addr   string
+	client                       *mongo.Client
+	addr, dbName, collectionName string
 }
 
-func New(addr string) *Storage {
+func New(addr, dbName, collectionName string) *Storage {
 	return &Storage{
-		addr: addr,
+		addr:           addr,
+		dbName:         dbName,
+		collectionName: collectionName,
 	}
 }
 
@@ -34,34 +36,17 @@ func (s *Storage) Connect() error {
 }
 
 func (s *Storage) Add(cm storage.ChatMessage) error {
-	collection := s.client.Database("db").Collection("messages")
+	collection := s.client.Database(s.dbName).Collection(s.collectionName)
 	_, err := collection.InsertOne(context.Background(), cm)
 	return err
 }
 
-func (s *Storage) Query(channel, term, name string, date time.Time) ([]storage.ChatMessage, error) {
+func (s *Storage) Query(opts storage.QueryOptions) ([]storage.ChatMessage, error) {
 	var res []storage.ChatMessage
 	findOptions := options.Find()
 	findOptions.SetLimit(1000)
-	filter := bson.M{}
-	if term != "" {
-		filter["message"] = fmt.Sprintf("/%v/", term)
-	}
-	if name != "" {
-		filter["name"] = name
-	}
-	if channel != "" {
-		filter["channel"] = channel
-	}
-	if !date.IsZero() {
-		startDate := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
-		endDate := time.Date(date.Year(), date.Month(), date.Day()+1, 0, 0, 0, 0, date.Location())
-		filter["time"] = bson.M{
-			"$gte": startDate.Unix(),
-			"$lte": endDate.Unix(),
-		}
-	}
-	collection := s.client.Database("db").Collection("messages")
+	filter := createFilter(opts)
+	collection := s.client.Database(s.dbName).Collection(s.collectionName)
 	cursor, err := collection.Find(context.Background(), filter, findOptions)
 	if err != nil {
 		return res, err
@@ -72,23 +57,23 @@ func (s *Storage) Query(channel, term, name string, date time.Time) ([]storage.C
 	return res, nil
 }
 
-func (s *Storage) QuerySubscriber(channel, term, name string, date time.Time, subscribeMin int) ([]storage.ChatMessage, error) {
-	var res []storage.ChatMessage
-	findOptions := options.Find()
-	findOptions.SetLimit(1000)
+func createFilter(opts storage.QueryOptions) bson.M {
 	filter := bson.M{}
-	filter["subscriber"] = true
-	filter["subscribemonths"] = bson.M{"$gte": subscribeMin}
-	if term != "" {
-		filter["message"] = fmt.Sprintf("/%v/", term)
+	if opts.SubscribeMin > 0 {
+		filter["subscriber"] = true
+		filter["subscribemonths"] = bson.M{"$gte": opts.SubscribeMin}
 	}
-	if name != "" {
-		filter["name"] = name
+	if opts.Term != "" {
+		filter["message"] = fmt.Sprintf("/%v/", opts.Term)
 	}
-	if channel != "" {
-		filter["channel"] = channel
+	if opts.Name != "" {
+		filter["name"] = opts.Name
 	}
-	if !date.IsZero() {
+	if opts.Channel != "" {
+		filter["channel"] = opts.Channel
+	}
+	if !opts.Date.IsZero() {
+		date := opts.Date
 		startDate := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
 		endDate := time.Date(date.Year(), date.Month(), date.Day()+1, 0, 0, 0, 0, date.Location())
 		filter["time"] = bson.M{
@@ -96,15 +81,26 @@ func (s *Storage) QuerySubscriber(channel, term, name string, date time.Time, su
 			"$lte": endDate.Unix(),
 		}
 	}
-	collection := s.client.Database("db").Collection("messages")
-	cursor, err := collection.Find(context.Background(), filter, findOptions)
-	if err != nil {
-		return res, err
+	if opts.Admin {
+		filter["admin"] = true
 	}
-	if err := cursor.All(context.Background(), &res); err != nil {
-		return res, err
+	if opts.GlobalMod {
+		filter["globalmod"] = true
 	}
-	return res, nil
+	if opts.Staff {
+		filter["staff"] = true
+	}
+	if opts.Turbo {
+		filter["turbo"] = true
+	}
+	if opts.BitsMin != 0 && opts.BitsMax != 0 {
+		filter["bits"] = bson.M{
+			"$gte": opts.BitsMin,
+			"$lte": opts.BitsMax,
+		}
+	}
+
+	return filter
 }
 
 func (s *Storage) Close() error {

@@ -18,10 +18,23 @@ type ChatMessage struct {
 	Name                         string
 }
 
+type QueryOptions struct {
+	Channel      string
+	Term         string
+	Name         string
+	Date         time.Time
+	SubscribeMin int
+	Admin        bool
+	GlobalMod    bool
+	Staff        bool
+	Turbo        bool
+	BitsMin      int
+	BitsMax      int
+}
+
 type Storage interface {
 	Connect() error
 	Add(ChatMessage) error
-	Query(channel, term, name string, date time.Time) ([]ChatMessage, error)
-	QuerySubscriber(channel, term, name string, date time.Time, subscribeMin int) ([]ChatMessage, error)
+	Query(opts QueryOptions) ([]ChatMessage, error)
 	Close() error
 }
