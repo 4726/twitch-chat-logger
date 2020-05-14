@@ -1,0 +1,63 @@
+<h3>Search</h3>
+
+<form [formGroup]="searchForm" 
+    (ngSubmit)="onSubmit(searchForm.value)">
+
+    <mat-form-field class="full-width">
+        <mat-label>Channel</mat-label>
+        <textarea matInput formControlName="channel" placeholder="Channel"></textarea>
+      </mat-form-field>
+      <br>
+      <mat-form-field class="full-width">
+        <mat-label>Term</mat-label>
+        <textarea matInput formControlName="term" placeholder="Term"></textarea>
+      </mat-form-field>
+      <br>
+      <mat-form-field class="full-width">
+          <mat-label>Name</mat-label>
+          <textarea matInput formControlName="name" placeholder="Name"></textarea>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="full-width">
+            <mat-label>Date</mat-label>
+            <input [matDatepicker]="myDatepicker">
+            <mat-datepicker #myDatepicker formControlName="date"></mat-datepicker>     
+          </mat-form-field>
+          <br>
+          <mat-form-field class="full-width">
+            <mat-label>Subscribe Months</mat-label>
+            <textarea matInput formControlName="subscribe_min" placeholder="Subscribe Months"></textarea>
+          </mat-form-field>
+          <br>
+          <mat-form-field class="full-width">
+            <mat-label>Admin</mat-label>
+            <mat-checkbox formControlName="admin">Admin</mat-checkbox>
+          </mat-form-field>
+          <br>
+          <mat-form-field class="full-width">
+            <mat-label>Global Mod</mat-label>
+            <mat-checkbox formControlName="global_mod">Global Mod</mat-checkbox>
+          </mat-form-field>
+          <br>
+          <mat-form-field class="full-width">
+            <mat-label>Staff</mat-label>
+            <mat-checkbox formControlName="staff">Staff</mat-checkbox>
+          </mat-form-field>
+          <br>
+          <mat-form-field class="full-width">
+            <mat-label>Turbo</mat-label>
+            <mat-checkbox formControlName="turbo">Turbo</mat-checkbox>
+          </mat-form-field>
+          <br>
+          <mat-form-field class="full-width">
+            <mat-label>Bits Min</mat-label>
+            <textarea matInput formControlName="bits_min" placeholder="Bits Min"></textarea>
+          </mat-form-field>
+          <br>
+          <mat-form-field class="full-width">
+            <mat-label>Bits Max</mat-label>
+            <textarea matInput formControlName="bits_max" placeholder="Bits Max"></textarea>
+          </mat-form-field>
+          <br>
+    <button mat-flat-button color="primary" type="submit">Search</button>
+</form>
