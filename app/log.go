@@ -6,10 +6,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var log *logrus.Entry
+var log *logrus.Logger
 
 func init() {
-	log = logrus.NewEntry(logrus.New())
-	logrus.SetFormatter(&logrus.JSONFormatter{})
-	logrus.SetOutput(os.Stdout)
+	log = logrus.New()
+	// log.SetFormatter(&logrus.JSONFormatter{})
+	log.SetOutput(os.Stdout)
 }

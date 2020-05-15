@@ -23,15 +23,19 @@ func NewServer(conf config.Config) (*Server, error) {
 		h:    &Handlers{store},
 		conf: conf,
 	}
+	log.Info("connecting to mongo")
 	if err := s.h.store.Connect(); err != nil {
+		log.Error("could not connect to mongo: ", err)
 		return nil, err
 	}
 
 	worker := NewWorker(conf, store)
 	go func() {
+		log.Info("starting worker")
 		if err := worker.Init(); err != nil {
 			log.Error("worker error: ", err)
 		}
+		log.Info("worker stopped")
 	}()
 
 	return s, nil
@@ -42,6 +46,11 @@ func (s *Server) Run() error {
 	return r.Run(s.conf.HTTP.Addr)
 }
 
-func (s *Server) Close() error {
-	return s.h.Close()
+func (s *Server) Close() {
+	log.Info("shutting down server")
+	if err := s.h.Close(); err != nil {
+		log.Error("shut down server error: ", err)
+	} else {
+		log.Info("shut down server complete")
+	}
 }
