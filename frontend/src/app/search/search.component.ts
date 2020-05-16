@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,23 +8,25 @@ import { Router } from '@angular/router';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
-  private searchForm: FormGroup;
-  private router: Router;
+  public searchForm: FormGroup;
   constructor(
-    private formBuilder: FormBuilder,
+    public formBuilder: FormBuilder,
+    private router: Router,
     ){
       this.searchForm = this.formBuilder.group({
         channel: '',
         term: '',
         name: '',
-        date: '',
-        subscribe_min: 0,
-        admin: false,
-        global_mod: false,
-        staff: false,
-        turbo: false,
-        bits_min: 0,
-        bits_max: 0,
+        day: '',
+        month: '',
+        year: '',
+        subscribe_min: '',
+        admin: new FormControl(false),
+        global_mod: new FormControl(false),
+        staff: new FormControl(false),
+        turbo: new FormControl(false),
+        bits_min: '',
+        bits_max: '',
       });
     }
 

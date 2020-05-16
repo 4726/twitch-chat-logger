@@ -6,11 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./messages.component.scss']
 })
 export class MessagesComponent implements OnInit {
-  private messages: Message[];
-  constructor() { }
+  public messages: Message[];
+  constructor() { 
+  }
 
   ngOnInit(): void {
-    this.messages
+    this.testInit()
   }
 
   testInit(): void {
@@ -18,8 +19,8 @@ export class MessagesComponent implements OnInit {
     msg.Text = "hello world"
     msg.DisplayName = "user1"
     let msg2: Message = new Message();
-    msg.Text = "hello"
-    msg.DisplayName = "user2"
+    msg2.Text = "hello"
+    msg2.DisplayName = "user2"
     this.messages = [
       msg, msg2
     ]

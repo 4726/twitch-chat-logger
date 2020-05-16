@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SearchComponent } from './search/search.component';
 import { MessagesComponent } from './messages/messages.component';
+import { SearchComponent } from './search/search.component';
 
 
 const routes: Routes = [
-  {path: 'search', component: SearchComponent},
-  {path: 'messages', component: MessagesComponent}
+  {path: 'messages', component: MessagesComponent},
+  {path: 'search', component: SearchComponent}
 ];
 
 @NgModule({
