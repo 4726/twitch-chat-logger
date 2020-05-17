@@ -4,6 +4,7 @@ import (
 	"github.com/4726/twitch-chat-logger/config"
 	"github.com/4726/twitch-chat-logger/storage/mongodb"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 )
 
 type Server struct {
@@ -13,6 +14,7 @@ type Server struct {
 
 func (s *Server) router() *gin.Engine {
 	r := gin.Default()
+	r.Use(cors.Default())
 	r.GET(s.conf.HTTP.SearchRoute, s.h.searchHandler)
 	return r
 }
@@ -28,6 +30,7 @@ func NewServer(conf config.Config) (*Server, error) {
 		log.Error("could not connect to mongo: ", err)
 		return nil, err
 	}
+	log.Info("connected to mongo")
 
 	worker := NewWorker(conf, store)
 	go func() {

@@ -19,6 +19,7 @@ func (h *Handlers) searchHandler(c *gin.Context) {
 	c.BindQuery(&opts)
 	messages, err := h.store.Query(opts)
 	if err != nil {
+		log.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "server error",
 		})
