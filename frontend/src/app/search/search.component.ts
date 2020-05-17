@@ -23,6 +23,7 @@ export class SearchComponent implements OnInit {
         subscribe_min: '',
         admin: new FormControl(false),
         global_mod: new FormControl(false),
+        moderator: new FormControl(false),
         staff: new FormControl(false),
         turbo: new FormControl(false),
         bits_min: '',
