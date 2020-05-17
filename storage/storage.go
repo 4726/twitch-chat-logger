@@ -26,6 +26,7 @@ type QueryOptions struct {
 	SubscribeMin int
 	Admin        bool
 	GlobalMod    bool
+	Moderator bool
 	Staff        bool
 	Turbo        bool
 	BitsMin      int

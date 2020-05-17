@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/4726/twitch-chat-logger/storage"
@@ -32,7 +31,17 @@ func (s *Storage) Connect() error {
 	}
 	s.client = client
 
-	return s.client.Ping(context.Background(), nil)
+	if err := s.client.Ping(context.Background(), nil); err != nil {
+		return err
+	}
+
+	index := mongo.IndexModel{
+		Keys: bson.D{{Key: "message", Value: "text"}},
+	}
+
+	collection := s.client.Database(s.dbName).Collection(s.collectionName)
+	_, err = collection.Indexes().CreateOne(context.Background(), index)
+	return err
 }
 
 func (s *Storage) Add(cm storage.ChatMessage) error {
@@ -64,7 +73,7 @@ func createFilter(opts storage.QueryOptions) bson.M {
 		filter["subscribemonths"] = bson.M{"$gte": opts.SubscribeMin}
 	}
 	if opts.Term != "" {
-		filter["message"] = fmt.Sprintf("/%v/", opts.Term)
+		filter["$text"] = bson.M{"$search": opts.Term}
 	}
 	if opts.Name != "" {
 		filter["name"] = opts.Name
@@ -86,6 +95,9 @@ func createFilter(opts storage.QueryOptions) bson.M {
 	}
 	if opts.GlobalMod {
 		filter["globalmod"] = true
+	}
+	if opts.Moderator {
+		filter["moderator"] = true
 	}
 	if opts.Staff {
 		filter["staff"] = true
