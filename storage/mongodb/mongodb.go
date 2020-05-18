@@ -69,7 +69,6 @@ func (s *Storage) Query(opts storage.QueryOptions) ([]storage.ChatMessage, error
 func createFilter(opts storage.QueryOptions) bson.M {
 	filter := bson.M{}
 	if opts.SubscribeMin > 0 {
-		filter["subscriber"] = true
 		filter["subscribemonths"] = bson.M{"$gte": opts.SubscribeMin}
 	}
 	if opts.Term != "" {
@@ -105,7 +104,7 @@ func createFilter(opts storage.QueryOptions) bson.M {
 	if opts.Turbo {
 		filter["turbo"] = true
 	}
-	if opts.BitsMin != 0 && opts.BitsMax != 0 {
+	if opts.BitsMin != 0 || opts.BitsMax != 0 {
 		filter["bits"] = bson.M{
 			"$gte": opts.BitsMin,
 			"$lte": opts.BitsMax,
@@ -116,6 +115,9 @@ func createFilter(opts storage.QueryOptions) bson.M {
 }
 
 func (s *Storage) Close() error {
+	if s.client == nil {
+		return nil
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
 	defer cancel()
 	return s.client.Disconnect(ctx)
