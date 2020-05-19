@@ -3,8 +3,8 @@ package app
 import (
 	"github.com/4726/twitch-chat-logger/config"
 	"github.com/4726/twitch-chat-logger/storage/mongodb"
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 type Server struct {

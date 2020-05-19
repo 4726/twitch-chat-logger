@@ -38,9 +38,17 @@ func (s *Storage) Connect() error {
 	index := mongo.IndexModel{
 		Keys: bson.D{{Key: "message", Value: "text"}},
 	}
+	index2 := mongo.IndexModel{
+		Keys: bson.M{"time": -1},
+	}
 
 	collection := s.client.Database(s.dbName).Collection(s.collectionName)
 	_, err = collection.Indexes().CreateOne(context.Background(), index)
+	if err != nil {
+		return err
+	}
+
+	_, err = collection.Indexes().CreateOne(context.Background(), index2)
 	return err
 }
 
