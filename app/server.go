@@ -40,7 +40,7 @@ func NewServer(conf config.Config) (*Server, error) {
 	worker := NewWorker(conf, store)
 	go func() {
 		log.Info("starting worker")
-		logMessageCount(worker, done)
+		go logMessageCount(worker, done)
 		if err := worker.Init(); err != nil {
 			log.Error("worker error: ", err)
 		}
