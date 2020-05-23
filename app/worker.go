@@ -11,6 +11,7 @@ import (
 type Worker struct {
 	chatClient *twitch.Client
 	store      storage.Storage
+	messages   int
 }
 
 //NewWorker returns a new worker
@@ -31,7 +32,14 @@ func (w *Worker) Init() error {
 
 //StoreMessage is the callback used with OnPrivateMessage()
 func (w *Worker) StoreMessage(privmsg twitch.PrivateMessage) {
+	w.messages++
 	if err := w.store.Add(privateMessageToStorageMessage(privmsg)); err != nil {
 		log.Error("store error: ", err)
 	}
+}
+
+func (w *Worker) PopMessagesCount() int {
+	count := w.messages
+	w.messages = 0
+	return count
 }
