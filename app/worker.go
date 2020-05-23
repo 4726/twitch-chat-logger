@@ -1,6 +1,8 @@
 package app
 
 import (
+	"sync/atomic"
+
 	"github.com/4726/twitch-chat-logger/config"
 	"github.com/4726/twitch-chat-logger/storage"
 	"github.com/4726/twitch-chat-logger/storage/mongodb"
@@ -11,7 +13,7 @@ import (
 type Worker struct {
 	chatClient *twitch.Client
 	store      storage.Storage
-	messages   int
+	messages   int64
 }
 
 //NewWorker returns a new worker
@@ -32,14 +34,12 @@ func (w *Worker) Init() error {
 
 //StoreMessage is the callback used with OnPrivateMessage()
 func (w *Worker) StoreMessage(privmsg twitch.PrivateMessage) {
-	w.messages++
+	atomic.AddInt64(&w.messages, 1)
 	if err := w.store.Add(privateMessageToStorageMessage(privmsg)); err != nil {
 		log.Error("store error: ", err)
 	}
 }
 
-func (w *Worker) PopMessagesCount() int {
-	count := w.messages
-	w.messages = 0
-	return count
+func (w *Worker) PopMessagesCount() int64 {
+	return atomic.SwapInt64(&w.messages, 0)
 }
