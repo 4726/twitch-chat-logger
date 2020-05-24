@@ -24,10 +24,10 @@ func testClient(t *testing.T) *Storage {
 func TestChannel(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{Channel: "channel"}
-	m2 := storage.ChatMessage{Channel: "channel2"}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{Channel: "channel", ID: "1"}
+	m2 := storage.ChatMessage{Channel: "channel2", ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{Channel: "channel"}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -37,12 +37,12 @@ func TestChannel(t *testing.T) {
 func TestTerm(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{Message: "hello world"}
-	m2 := storage.ChatMessage{Message: "helloooo"}
-	m3 := storage.ChatMessage{Message: "hel lo"}
-	s.Add(m1)
-	s.Add(m2)
-	s.Add(m3)
+	m1 := storage.ChatMessage{Message: "hello world", ID: "1"}
+	m2 := storage.ChatMessage{Message: "helloooo", ID: "2"}
+	m3 := storage.ChatMessage{Message: "hel lo", ID: "3"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
+	assert.NoError(t, s.Add(m3))
 	opt := storage.QueryOptions{Term: "world"}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -57,10 +57,10 @@ func TestTerm(t *testing.T) {
 func TestName(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{Name: "channel", DisplayName: "channel"}
-	m2 := storage.ChatMessage{Name: "channel2", DisplayName: "channel2"}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{Name: "channel", DisplayName: "channel", ID: "1"}
+	m2 := storage.ChatMessage{Name: "channel2", DisplayName: "channel2", ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{Name: "channel"}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -70,10 +70,10 @@ func TestName(t *testing.T) {
 func TestDate(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{Name: "channel", Time: time.Now().Unix()}
-	m2 := storage.ChatMessage{Name: "channel2", Time: time.Now().Unix()}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{Name: "channel", Time: time.Now().Unix(), ID: "1"}
+	m2 := storage.ChatMessage{Name: "channel2", Time: time.Now().Unix(), ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{Date: time.Now()}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -88,10 +88,10 @@ func TestDate(t *testing.T) {
 func TestSubscribeMin(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{SubscribeMonths: 0}
-	m2 := storage.ChatMessage{SubscribeMonths: 5}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{SubscribeMonths: 0, ID: "1"}
+	m2 := storage.ChatMessage{SubscribeMonths: 5, ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{SubscribeMin: 4}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -116,10 +116,10 @@ func TestSubscribeMin(t *testing.T) {
 func TestAdmin(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{Admin: false}
-	m2 := storage.ChatMessage{Admin: true}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{Admin: false, ID: "1"}
+	m2 := storage.ChatMessage{Admin: true, ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{Admin: true}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -134,10 +134,10 @@ func TestAdmin(t *testing.T) {
 func TestGlobalMod(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{GlobalMod: false}
-	m2 := storage.ChatMessage{GlobalMod: true}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{GlobalMod: false, ID: "1"}
+	m2 := storage.ChatMessage{GlobalMod: true, ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{GlobalMod: true}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -152,10 +152,10 @@ func TestGlobalMod(t *testing.T) {
 func TestModerator(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{Moderator: false}
-	m2 := storage.ChatMessage{Moderator: true}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{Moderator: false, ID: "1"}
+	m2 := storage.ChatMessage{Moderator: true, ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{Moderator: true}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -170,10 +170,10 @@ func TestModerator(t *testing.T) {
 func TestStaff(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{Staff: false}
-	m2 := storage.ChatMessage{Staff: true}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{Staff: false, ID: "1"}
+	m2 := storage.ChatMessage{Staff: true, ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{Staff: true}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -188,10 +188,10 @@ func TestStaff(t *testing.T) {
 func TestTurbo(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{Turbo: false}
-	m2 := storage.ChatMessage{Turbo: true}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{Turbo: false, ID: "1"}
+	m2 := storage.ChatMessage{Turbo: true, ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{Turbo: true}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -206,10 +206,10 @@ func TestTurbo(t *testing.T) {
 func TestBits(t *testing.T) {
 	s := testClient(t)
 	defer s.Close()
-	m1 := storage.ChatMessage{Bits: 0}
-	m2 := storage.ChatMessage{Bits: 1000}
-	s.Add(m1)
-	s.Add(m2)
+	m1 := storage.ChatMessage{Bits: 0, ID: "1"}
+	m2 := storage.ChatMessage{Bits: 1000, ID: "2"}
+	assert.NoError(t, s.Add(m1))
+	assert.NoError(t, s.Add(m2))
 	opt := storage.QueryOptions{BitsMin: 100, BitsMax: 500}
 	res, err := s.Query(opt)
 	assert.NoError(t, err)
@@ -229,4 +229,13 @@ func TestBits(t *testing.T) {
 	res, err = s.Query(opt)
 	assert.NoError(t, err)
 	assert.ElementsMatch(t, []storage.ChatMessage{m1, m2}, res)
+}
+
+func TestUniqueID(t *testing.T) {
+	s := testClient(t)
+	defer s.Close()
+	m1 := storage.ChatMessage{Channel: "channel", ID: "1"}
+	m2 := storage.ChatMessage{Channel: "channel2", ID: "1"}
+	assert.NoError(t, s.Add(m1))
+	assert.Error(t, s.Add(m2))
 }

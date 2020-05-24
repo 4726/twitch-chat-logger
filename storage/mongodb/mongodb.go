@@ -41,6 +41,10 @@ func (s *Storage) Connect() error {
 	index2 := mongo.IndexModel{
 		Keys: bson.M{"time": -1},
 	}
+	index3 := mongo.IndexModel{
+		Keys:    bson.M{"id": 1},
+		Options: options.Index().SetUnique(true),
+	}
 
 	collection := s.client.Database(s.dbName).Collection(s.collectionName)
 	_, err = collection.Indexes().CreateOne(context.Background(), index)
@@ -49,6 +53,10 @@ func (s *Storage) Connect() error {
 	}
 
 	_, err = collection.Indexes().CreateOne(context.Background(), index2)
+	if err != nil {
+		return err
+	}
+	_, err = collection.Indexes().CreateOne(context.Background(), index3)
 	return err
 }
 

@@ -1,2 +1,3 @@
 config_dev.yml
 twitch-chat-logger
+docker-compose.yml

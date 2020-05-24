@@ -36,7 +36,7 @@ func (w *Worker) Init() error {
 func (w *Worker) StoreMessage(privmsg twitch.PrivateMessage) {
 	atomic.AddInt64(&w.messages, 1)
 	if err := w.store.Add(privateMessageToStorageMessage(privmsg)); err != nil {
-		log.Error("store error: ", err)
+		log.Error("add store error: ", err)
 	}
 }
 
