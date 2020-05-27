@@ -35,7 +35,7 @@ func (s *Storage) Connect() error {
 		return err
 	}
 
-	index := mongo.IndexModel{
+	index1 := mongo.IndexModel{
 		Keys: bson.D{{Key: "message", Value: "text"}},
 	}
 	index2 := mongo.IndexModel{
@@ -45,18 +45,18 @@ func (s *Storage) Connect() error {
 		Keys:    bson.M{"id": 1},
 		Options: options.Index().SetUnique(true),
 	}
+	index4 := mongo.IndexModel{
+		Keys: bson.M{"channel": 1},
+	}
+	index5 := mongo.IndexModel{
+		Keys: bson.M{"name": 1},
+	}
 
 	collection := s.client.Database(s.dbName).Collection(s.collectionName)
-	_, err = collection.Indexes().CreateOne(context.Background(), index)
-	if err != nil {
-		return err
-	}
+	_, err = collection.Indexes().CreateMany(context.Background(), []mongo.IndexModel{
+		index1, index2, index3, index4, index5,
+	})
 
-	_, err = collection.Indexes().CreateOne(context.Background(), index2)
-	if err != nil {
-		return err
-	}
-	_, err = collection.Indexes().CreateOne(context.Background(), index3)
 	return err
 }
 
