@@ -19,18 +19,9 @@ type ChatMessage struct {
 }
 
 type QueryOptions struct {
-	Channel      string
-	Term         string
-	Name         string
-	Date         time.Time
-	SubscribeMin int
-	Admin        bool
-	GlobalMod    bool
-	Moderator bool
-	Staff        bool
-	Turbo        bool
-	BitsMin      int
-	BitsMax      int
+	Channel string
+	Name    string
+	Date    time.Time
 }
 
 type Storage interface {

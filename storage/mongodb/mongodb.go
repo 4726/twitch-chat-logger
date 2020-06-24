@@ -34,28 +34,22 @@ func (s *Storage) Connect() error {
 	if err := s.client.Ping(context.Background(), nil); err != nil {
 		return err
 	}
-
-	index1 := mongo.IndexModel{
-		Keys: bson.D{{Key: "message", Value: "text"}},
+	index := mongo.IndexModel{
+		Keys: bson.D{{"name", 1}, {"channel", 1}},
 	}
 	index2 := mongo.IndexModel{
-		Keys: bson.M{"time": -1},
-	}
-	index3 := mongo.IndexModel{
 		Keys:    bson.M{"id": 1},
 		Options: options.Index().SetUnique(true),
+	}
+	index3 := mongo.IndexModel{
+		Keys: bson.M{"name": 1},
 	}
 	index4 := mongo.IndexModel{
 		Keys: bson.M{"channel": 1},
 	}
-	index5 := mongo.IndexModel{
-		Keys: bson.M{"name": 1},
-	}
 
 	collection := s.client.Database(s.dbName).Collection(s.collectionName)
-	_, err = collection.Indexes().CreateMany(context.Background(), []mongo.IndexModel{
-		index1, index2, index3, index4, index5,
-	})
+	_, err = collection.Indexes().CreateMany(context.Background(), []mongo.IndexModel{index, index2, index3, index4})
 
 	return err
 }
@@ -84,12 +78,6 @@ func (s *Storage) Query(opts storage.QueryOptions) ([]storage.ChatMessage, error
 
 func createFilter(opts storage.QueryOptions) bson.M {
 	filter := bson.M{}
-	if opts.SubscribeMin > 0 {
-		filter["subscribemonths"] = bson.M{"$gte": opts.SubscribeMin}
-	}
-	if opts.Term != "" {
-		filter["$text"] = bson.M{"$search": opts.Term}
-	}
 	if opts.Name != "" {
 		filter["name"] = opts.Name
 	}
@@ -103,27 +91,6 @@ func createFilter(opts storage.QueryOptions) bson.M {
 		filter["time"] = bson.M{
 			"$gte": startDate.Unix(),
 			"$lte": endDate.Unix(),
-		}
-	}
-	if opts.Admin {
-		filter["admin"] = true
-	}
-	if opts.GlobalMod {
-		filter["globalmod"] = true
-	}
-	if opts.Moderator {
-		filter["moderator"] = true
-	}
-	if opts.Staff {
-		filter["staff"] = true
-	}
-	if opts.Turbo {
-		filter["turbo"] = true
-	}
-	if opts.BitsMin != 0 || opts.BitsMax != 0 {
-		filter["bits"] = bson.M{
-			"$gte": opts.BitsMin,
-			"$lte": opts.BitsMax,
 		}
 	}
 

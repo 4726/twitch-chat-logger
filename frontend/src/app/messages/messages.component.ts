@@ -18,17 +18,8 @@ export class MessagesComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.backendParams = {
         Channel:  params['channel'],
-        Term:  params['term'],
         Name:  params['name'],
         Date:  params['day'] + params['month'] + params['year'],
-        SubscribeMin:  params["subscribe_min"],
-        Admin:  params['admin'],
-        GlobalMod:  params['global_mod'],
-        Moderator: params["moderator"],
-        Staff:  params['staff'],
-        Turbo:  params['turbo'],
-        BitsMin:  params['bits_min'],
-        BitsMax:  params['bits_max'],
       }
     })
   }

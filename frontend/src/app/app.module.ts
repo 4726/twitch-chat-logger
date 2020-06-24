@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MessagesComponent } from './messages/messages.component';
-import { SearchComponent } from './search/search.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -18,7 +17,6 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [
     AppComponent,
     MessagesComponent,
-    SearchComponent
   ],
   imports: [
     BrowserModule,
